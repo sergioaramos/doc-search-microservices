@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+  api_gateway:
+    build:
+      context: ./api_gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ingestion_service
+      - search_service
+
+  ingestion_service:
+    build:
+      context: ./services/ingestion_service
+    ports:
+      - "8001:8001"
+    environment:
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+  search_service:
+    build:
+      context: ./services/search_service
+    ports:
+      - "8002:8002"
+    environment:
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+  orchestration_service:
+    build:
+      context: ./services/orchestration_service
+    ports:
+      - "8003:8003"
+    depends_on:
+      - ingestion_service
+      - search_service
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false  # Deshabilita autenticación para pruebas locales
+      - xpack.security.http.ssl.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+volumes:
+  es_data:
+    driver: local
