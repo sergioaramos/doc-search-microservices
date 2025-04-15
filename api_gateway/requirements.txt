@@ -1,0 +1,4 @@
+fastapi ## FastAPI is a modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints.
+httpx ## A next generation HTTP client for Python. It is designed to be both highly usable and powerful, with a simple and elegant interface.
+uvicorn ## Uvicorn is a lightning-fast ASGI server implementation, using uvloop and httptools.
+python-multipart
